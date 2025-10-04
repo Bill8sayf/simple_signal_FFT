@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,24 +22,64 @@ public class MainActivity extends AppCompatActivity {
     private final String LOG_TAG = "MAIN_ACTIVITY";
 
     private void BundleSending() {
-        Bundle lonelyBundle = new Bundle();
+        try {
+            Bundle lonelyBundle = new Bundle();
 
-        lonelyBundle.putInt("AMP", InputValidator.validateInteger(EditAmp.getText().toString(), "AMP"));
-        lonelyBundle.putInt("FREQ", InputValidator.validateInteger(EditFreq.getText().toString(), "FREQ"));
-        lonelyBundle.putInt("PHASE", InputValidator.validateInteger(EditPhase.getText().toString(), "PHASE"));
-        lonelyBundle.putInt("DISFREQ", InputValidator.validateInteger(EditDisFreq.getText().toString(), "DISFREQ"));
-        lonelyBundle.putInt("DOTNUM", InputValidator.validateInteger(EditDotNum.getText().toString(), "DOTNUM"));
+            int amp = InputValidator.validateInteger(EditAmp.getText().toString(), "AMP", -100, 100);
+            int freq = InputValidator.validateInteger(EditFreq.getText().toString(), "FREQ", 0, 100000);
+            int phase = InputValidator.validateInteger(EditPhase.getText().toString(), "PHASE");
+            //int disFreq = InputValidator.validateInteger(EditDisFreq.getText().toString(), "DISFREQ",-1000000,1000000);
+            //int dotNum = InputValidator.validateInteger(EditDotNum.getText().toString(), "DOTNUM",0,1000);
 
-        Log.d(LOG_TAG, "Bundle Formed");
 
-        Intent intent = new Intent(this, GraphActivity.class);
-        intent.putExtras(lonelyBundle);
+            lonelyBundle.putInt("AMP", amp);
+            lonelyBundle.putInt("FREQ", freq);
+            lonelyBundle.putInt("PHASE", phase);
 
-        Log.d(LOG_TAG, "Intent Formed");
+            float timePeriod;
+            int disFreq;
+            int dotNum = 2028;
 
-        startActivity(intent);
+            if (freq != 0) {
+                timePeriod = 3.0f / freq;
+                disFreq = (int)(dotNum / timePeriod);
+            } else {
+                timePeriod = 3.0f;
+                disFreq = dotNum / 3;
+            }
 
-        Log.d(LOG_TAG, "Intent Started");
+            if (disFreq == 0) disFreq = 1;
+
+            lonelyBundle.putInt("DISFREQ", disFreq);
+            lonelyBundle.putInt("DOTNUM", dotNum);
+            lonelyBundle.putFloat("TIME_PERIOD", timePeriod);
+
+            Log.d(LOG_TAG, String.format("Параметры: amp=%d, freq=%dГц, time=%.3fсек, disFreq=%dГц, dots=%d", amp, freq, timePeriod, disFreq, dotNum));
+
+            Log.d(LOG_TAG, "Bundle Formed");
+
+            Intent intent = new Intent(this, GraphActivity.class);
+            intent.putExtras(lonelyBundle);
+            Log.d(LOG_TAG, "Intent Formed");
+
+            startActivity(intent);
+            Log.d(LOG_TAG, "Intent Started");
+
+        } catch (
+                ValidationException e) {
+            showErrorMessage(e.getMessage());
+            Log.e(LOG_TAG, "Validation error: " + e.getMessage());
+        } catch (
+                Exception e) {
+            showErrorMessage("Произошла непредвиденная ошибка");
+            Log.e(LOG_TAG, "Unexpected error: ", e);
+        }
+    }
+
+    private void showErrorMessage(String message) {
+        runOnUiThread(() -> {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        });
     }
 
 
@@ -52,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         EditAmp = findViewById(R.id.ETXT_Amp);
         EditFreq = findViewById(R.id.ETXT_Freq);
         EditPhase = findViewById(R.id.ETXT_Phase);
-        EditDisFreq = findViewById(R.id.ETXT_DisFreq);
-        EditDotNum = findViewById(R.id.ETXT_DotsNum);
+        //EditDisFreq = findViewById(R.id.ETXT_DisFreq);
+        //EditDotNum = findViewById(R.id.ETXT_DotsNum);
 
 
         button.setOnClickListener(v -> {

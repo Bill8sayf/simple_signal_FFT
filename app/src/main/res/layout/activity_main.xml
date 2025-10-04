@@ -40,19 +40,19 @@
             android:layout_height="wrap_content"
             android:hint="Фаза (рад)" />
 
-        <EditText
+        <!-- <EditText
             android:id="@+id/ETXT_DisFreq"
             android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Частота дискретизации" />
+            android:hint="Частота дискретизации" /> -->
 
-        <EditText
+        <!-- <EditText
             android:id="@+id/ETXT_DotsNum"
             android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Количество точек" />
+            android:hint="Количество точек" /> -->
 
         <Button
             android:id="@+id/button1"

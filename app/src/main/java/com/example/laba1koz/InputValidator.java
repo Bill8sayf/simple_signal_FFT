@@ -25,17 +25,4 @@ public class InputValidator {
 
         return value;
     }
-
-    // Проверка числа с плавающей точкой
-    public static Float validateFloat(String input, String fieldName) {
-        if (input == null || input.trim().isEmpty()) {
-            throw new ValidationException(fieldName + " не может быть пустым");
-        }
-
-        try {
-            return Float.parseFloat(input.trim());
-        } catch (NumberFormatException e) {
-            throw new ValidationException(fieldName + " должно быть числом");
-        }
-    }
 }

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,20 +17,22 @@ import androidx.core.content.PackageManagerCompat;
 
 public class GraphActivity extends AppCompatActivity {
 
-    private TextView view;
+    private GraphView graphView;
     private String text;
+    private Button toggleButton;
 
     private final String LOG_TAG = "GRAPH_ACTIVITY";
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.graph_activity);
-//        Log.d(LOG_TAG, "GraphActivity onCreate");
-        view = findViewById(R.id.testView);
-
-
         Log.d(LOG_TAG, "onCreate");
+
+        graphView = findViewById(R.id.sin_graphView);
+        toggleButton = findViewById(R.id.toggleButton);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -43,11 +46,26 @@ public class GraphActivity extends AppCompatActivity {
             return;
         }
 
-        text = String.valueOf(bundle.getInt("AMP"));
+        int amp = bundle.getInt("AMP");
+        int freq = bundle.getInt("FREQ");
+        int phase = bundle.getInt("PHASE");
+        int disFreq = bundle.getInt("DISFREQ");
+        int dotNum = bundle.getInt("DOTNUM");
+        float timePeriod = bundle.getFloat("TIME_PERIOD", 1.0f);
 
-        view.setText(text);
+        Log.d(LOG_TAG, "Получены параметры: AMP=" + amp + ", FREQ=" + freq);
 
-        Log.d(LOG_TAG, "Text Printed");
+        graphView.setData(amp, freq, phase, disFreq, dotNum, timePeriod);
+
+        toggleButton.setOnClickListener(v -> {
+            graphView.toggleView();
+
+            if (toggleButton.getText().toString().equals("Показать спектр")) {
+                toggleButton.setText("Показать сигнал");
+            } else {
+                toggleButton.setText("Показать спектр");
+            }
+        });
     }
 
 

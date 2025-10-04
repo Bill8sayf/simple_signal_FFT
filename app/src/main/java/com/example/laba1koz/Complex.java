@@ -1,4 +1,4 @@
-package org.rdr.radarbox.DSP;
+package com.example.laba1koz;
 
 import androidx.annotation.NonNull;
 

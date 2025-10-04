@@ -1,4 +1,4 @@
-package org.rdr.radarbox.DSP;
+package com.example.laba1koz;
 
 /**
  *  Класс {@code FFT} предоставляет методы для вычисления БПФ, обратного БПФ, линейной и
